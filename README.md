@@ -1,6 +1,6 @@
-# lfd-design
+# A skill for loss-function-development
 
-A skill that designs loss functions for autonomous agent loops.
+A skill that designs loss functions for long-running autonomous agent loops.
 
 Spec-driven development says: *build this, make the tests pass.*
 Loss-function development (LFD) says: *build this, make the tests pass, then
