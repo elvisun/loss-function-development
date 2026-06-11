@@ -3,36 +3,49 @@
 This is a condensed example of what `/lfd-design` emits — a /goal for
 building a news search/retrieval layer scored against a reference product,
 modeled on a real 30-hour run (92k pages crawled, ~$40 in tokens, final
-output ~50× the reference on the same queries).
+output ~50× the reference on the same queries). The eval was built by
+mining the reference product's public outputs; the spec was
+reverse-engineered from its public surface in a prior session.
 
 ---
 
 # Goal: News-intel retrieval layer matching reference-product quality
 
-## Target
+## Stage 0 — Build to spec (inner loop)
+
+Implement `spec.md` (crawler → normalizer → index → ranker). Make the test
+suite pass (`npm test`). Do not score against the eval until tests are
+green. Tests stay green every cycle thereafter.
+
+## Target (outer loop)
 
 For each query in the eval, the system returns a ranked list of source
 articles. Score = harmonic mean of recall@50 and precision@50 against
 ground truth (`harness/score.sh`). Bar: **0.85 on holdout**.
 
+- A VOID result means a constraint was violated — find and remove the
+  violation; the harness will not tell you which it was.
 - `eval/dev` (160 queries): score freely; misses reported, capped at 10
-  per call.
+  per call. Query inputs are visible; answers live inside the scorer only.
 - `eval/holdout` (60 queries, answers outside this repo): aggregate score
   only, max 1 call per 6 wall-clock hours, audit-logged. Acceptance is
   measured here exclusively.
 
 ## Constraints
 
-- Wall-clock budget: 36 hours. Check `harness/status.sh` every cycle.
+- Wall-clock budget: 36 hours. Check `harness/status.sh` every cycle — it
+  shows elapsed and per-step time, crawler credits spent and projected
+  burn before the next batch, LLM spend, and your own token consumption.
+  Watch gain per token; a flat gradient at high burn means stop.
 - Spend: crawler ≤ 100k credits total; LLM data-plane spend ≤ $50 on the
-  provided key. Track both via `harness/status.sh`.
+  provided key.
 - Surface: this repo, the crawler API, the LLM key. Nothing else.
 - Methodology: LLM analysis allowed in the data plane; ranking itself must
   be deterministic and reproducible.
-- Capacity caps: any keyword/expansion list ≤ 20 entries; no literal string
-  anywhere in the codebase may match an eval query or eval answer; no
+- Capacity caps: any keyword/expansion list ≤ 20 entries; no
   query-conditional branches keyed to specific inputs.
-- `harness/` and `eval/` are read-only. Never read eval answer data.
+- `goal.md`, `harness/`, and `eval/` are read-only. Eval query inputs may
+  be read where the harness exposes them; eval answers never.
 
 ## Cycle protocol
 
@@ -44,6 +57,8 @@ ground truth (`harness/score.sh`). Bar: **0.85 on holdout**.
    failure mode, the diagnostic that will distinguish them.
 4. Change.
 5. Log the result against the hypothesis.
+6. Checkpoint: `git commit -am "cycle <n>: <score>"` — every cycle, gain
+   or no gain, so the run is bisectable and crash-safe.
 
 ## Entropy rules
 

@@ -88,3 +88,18 @@ other direction goes unexplored. The default state of a loop is a local
 maximum.
 **Fence:** stall rule (flat metric ⇒ structural change required) and an
 exploration quota every K cycles, written into the /goal.
+
+## 12. Oracle-mining the enforcement instrument
+
+The lint that enforces "no eval-shaped literals" reports WHICH literal
+violated. The agent plants candidate strings, runs the scorer, and reads
+eval membership off the violation report — one string at a time. Miss-list
+mining (#2), rebuilt inside your own fence. Found by red-teaming this very
+skill: the first draft told the agent "no literal may match an eval item"
+AND "never read eval data" — a constraint the agent could neither check
+nor the harness enforce without leaking.
+**Fence:** constraint checks that touch eval content run only inside the
+scorer; a violation VOIDS the score and reports nothing else; detailed lint
+findings go to the human, outside the agent's read surface. Your
+enforcement instrument is itself a feedback channel — leak-audit it like
+any other.

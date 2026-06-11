@@ -15,20 +15,31 @@ because it's broken, but because you told it where to go and left the
 shortcuts open.
 
 `/lfd-design` is the meta-meta-prompt, packaged as a skill. It doesn't solve
-your task — it interrogates it, designs the target, generates the harness,
+your task — it observes what harness and tooling you already have, ingests or
+reverse-engineers the spec, builds the eval (often by mining public
+artifacts), designs the target, generates **and verifies** the harness,
 red-teams its own draft for cheats, and emits a `goal.md` ready to launch.
+When the loop cheats anyway mid-run, re-invoke it in **patch mode**: it reads
+the iteration log, closes the open path in the loss function (not the agent's
+code), and resumes from the last honest checkpoint.
 
 ## What it produces
 
 ```
-goal.md              the loss function: target, constraints, cycle protocol,
-                     entropy rules, stop conditions
+goal.md              the loss function: spec gate (inner loop), target,
+                     constraints, cycle protocol, entropy rules, stop conditions
+spec.md              the inner loop: system design + test cases (ingested,
+                     or reverse-engineered from the reference artifact)
 harness/score.sh     task-specific scorer (pixel-diff, recall+precision,
                      schema diff — generated for your task, not generic)
+harness/lint.sh      capacity-cap and eval-overlap checks; violations VOID
+                     the score and report nothing else
 harness/probe.sh     perturbed eval variants; the dev-vs-probe gap is the
                      memorization gauge
-harness/status.sh    wall-clock, cycles, score history, spend
-eval/dev/            scored freely during the run
+harness/status.sh    per-step wall-clock, score history, spend + projected
+                     burn, the agent's own token consumption
+eval/dev/            scored freely during the run (inputs visible,
+                     answers blinded)
 eval/holdout/        scored rarely, aggregate-only; acceptance lives here
 LOG.md               iteration log: hypothesis / expected failure /
                      diagnostic / result
