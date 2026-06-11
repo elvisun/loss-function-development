@@ -1,5 +1,9 @@
 # Example output: goal.md for a news-retrieval data layer
 
+> For human readers. Kept outside `skills/lfd-design/` deliberately — an
+> example bundled with the skill would anchor generated loss functions to
+> this task's shape.
+
 This is a condensed example of what `/lfd-design` emits — a /goal for
 building a news search/retrieval layer scored against a reference product,
 modeled on a real 30-hour run (92k pages crawled, ~$40 in tokens, final
