@@ -87,15 +87,16 @@ harness at `skills/lfd-design/SKILL.md`.
 ```
 skills/lfd-design/
 ├── SKILL.md                     the skill (the meta-meta-prompt)
-└── references/cheat-museum.md   observed cheats and the fences that closed them
-examples/
-└── example-goal.md              a real-shaped goal.md output, for humans
+└── references/
+    ├── cheat-museum.md          observed cheats and the fences that closed them
+    ├── goal-template.md         the structure every emitted goal.md must fill
+    └── log-template.md          the iteration log that survives compaction
 ```
 
-The example lives outside the skill folder on purpose: a goal.md sample
-bundled with the skill would anchor every generated loss function to one
-task's shape — the skill would overfit to its own example. Read it to see
-what output looks like; don't install it.
+There is deliberately no example goal.md in this repo: a worked example
+would anchor every generated loss function to one task's shape — the skill
+would overfit to its own example. The templates define structure only; the
+content is designed per task.
 
 ## Contributing
 
