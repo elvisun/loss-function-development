@@ -2,6 +2,8 @@
 
 A skill that designs loss functions for long-running autonomous agent loops.
 
+[This article explains how it works and why it works.](https://x.com/elvissun/status/2065035615800864954)
+
 Spec-driven development says: *build this, make the tests pass.*
 Loss-function development (LFD) says: *build this, make the tests pass, then
 iterate against a thousand eval cases you can't see.* A test suite is finite —
